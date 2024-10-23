@@ -16,6 +16,14 @@ Given a list of movies, this sample implements semantic search, a building block
 - [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 - Visual Studio or Visual Studio Code
 
+## Quick Start
+
+1. Open in GitHub Codespaces
+
+    [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/luisquintanilla/RAGDotnetAIFundamentals)
+
+1. Download the [e5-small-v2 model](https://huggingface.co/intfloat/e5-small-v2/resolve/main/model.onnx?download=true) and save it to the *assets* directory. If you rename the file, make sure to update the model path used by the `generator` in *Program.cs*.
+
 ## Setup
 
 1. Download the [e5-small-v2 model](https://huggingface.co/intfloat/e5-small-v2/resolve/main/model.onnx?download=true) and save it to the *assets* directory. If you rename the file, make sure to update the model path used by the `generator` in *Program.cs*.

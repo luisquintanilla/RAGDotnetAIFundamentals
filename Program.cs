@@ -11,9 +11,6 @@ var tokenizer = BertTokenizer.Create(Path.Join("assets", "vocab.txt"));
 // Create embedding generator
 var generator = new MLNETOnnxEmbeddingGenerator(tokenizer, Path.Join("assets","model.onnx"));
 
-// Tokenize text
-var text = new [] {"The quick brown fox jumps over the lazy dog"};
-
 // Initialize VectorStore Collection
 var vectorStore = new InMemoryVectorStore();
 

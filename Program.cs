@@ -11,28 +11,13 @@ var tokenizer = BertTokenizer.Create(Path.Join("assets", "vocab.txt"));
 // Create embedding generator
 var generator = new MLNETOnnxEmbeddingGenerator(tokenizer, Path.Join("assets","model.onnx"));
 
-// Initialize VectorStore Collection
-var vectorStore = new InMemoryVectorStore();
+// Initialize movie service
+var movieService = new MovieService(new InMemoryVectorStore(), generator);
 
-var movies = vectorStore.GetCollection<int, MovieEmbedding>("movies");
+// Populate VectorStore
+await movieService.LoadAsync();
 
-await movies.CreateCollectionIfNotExistsAsync();
-
-// Generate embeddings and populate VectorStore
-var movieData = Utils.LoadMovies();
-
-foreach(var movie in movieData)
-{
-    var embedding = await generator.GenerateAsync(new [] {movie.Description});
-    await movies.UpsertAsync(new MovieEmbedding { 
-        Key = movieData.IndexOf(movie),
-        Details = movie, 
-        Vector = embedding.First().Vector });
-}
-
-// Generate embedding for query
 var query = "A family friendly movie";
-var queryEmbedding = await generator.GenerateAsync(new [] {query});
 
 // Search for movies similar to the query
 var searchOptions = new VectorSearchOptions()
@@ -41,7 +26,7 @@ var searchOptions = new VectorSearchOptions()
     VectorPropertyName = "Vector"
 };
 
-var results = await movies.VectorizedSearchAsync(queryEmbedding.First().Vector, searchOptions);
+var results = await movieService.SearchAsync(query, searchOptions);
 
 // Display search results
 await foreach(var result in results.Results)

@@ -27,12 +27,13 @@ public class MLNETOnnxEmbeddingGenerator : IEmbeddingGenerator<string, Embedding
 
     public Task<GeneratedEmbeddings<Embedding<float>>> GenerateAsync(IEnumerable<string> values, EmbeddingGenerationOptions? options = null, CancellationToken cancellationToken = default)
     {
+        // 1. Convert text to tokens
         var input = Preprocess(_tokenizer, values);
 
-        // Run inference
+        // 2. Use ML.NET and ONNX to generate embeddings
         var output = Infer(_tokenizer, input);
 
-        // Apply post-processing operations
+        // 3. Post-process model outputs
         var attentionMask = input.First().AttentionMask;
         var pooled = MeanPooling(output, attentionMask, new long[] { 1, attentionMask.Length, output.Length / attentionMask.Length });
         var normalized = NormalizeAndDivide(pooled, new long[] { 1, attentionMask.Length, output.Length / attentionMask.Length });
@@ -75,7 +76,7 @@ public class MLNETOnnxEmbeddingGenerator : IEmbeddingGenerator<string, Embedding
         };        
 
         // Return input
-        return new [] {input};
+        return [input];
     }
 
     private float[] MeanPooling(float[] embeddings, long[] attentionMask, long[] shape)
